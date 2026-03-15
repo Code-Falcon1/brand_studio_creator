@@ -1,70 +1,106 @@
-# Getting Started with Create React App
+# Brand Studio (CodeFalcon Projects)
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+Brand-first React app to generate **images, videos, text, and audio** with the Pollinations API — built for creating **consistent social posts** using a brand palette, presets, variations, reference images, and an optional **exact logo overlay** on exported images.
 
-## Available Scripts
+## Features
 
-In the project directory, you can run:
+- Image + Video + Text + Audio (TTS) types
+- Uses Pollinations `/image/{prompt}`, `/video/{prompt}`, `/text/{prompt}`, `/audio/{text}`
+- Brand profiles (company name, tone, colors) + logo upload → palette extraction
+- “Generate variations” (same prompt, different seeds) for fast picking
+- Reference image (palette/vibe hints)
+- Mobile-friendly settings (collapsed sections) + big preview
+- History saved in `localStorage` (API key stripped from URLs)
+- English + Arabic UI (RTL auto-switch) via language toggle in the header
+- Optional: try to include your brand logo in the scene (best-effort AI)
+- Optional: add an exact brand logo overlay on image download (guaranteed)
 
-### `npm start`
+## Contact
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+- contact@codefalcon.me
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+## Quick start
 
-### `npm test`
+```bash
+npm install
+npm start
+```
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+Open `http://localhost:3000`.
 
-### `npm run build`
+## API key (recommended: runtime key in UI)
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+This is a **client-only** app (no proxy). Any key you use is visible in the browser.
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+You have 2 ways to provide a key:
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+1) **Runtime key (recommended for open-source demo)**
+- Open the app → **Settings → API key**
+- Paste your key → **Save**
+- It’s stored in `localStorage` on your device only.
 
-### `npm run eject`
+2) **Build-time env key (for local dev / your own deploy)**
+- Copy `.env.local.example` → `.env.local`
+- Set:
+  - `REACT_APP_POLLINATIONS_API_KEY=...`
+- Restart `npm start`
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+## Proxy mode (recommended for a public shared deploy)
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+This repo includes **Cloudflare Pages Functions** that proxy Pollinations calls so your key stays server-side:
+- `GET /api/image?prompt=...`
+- `GET /api/video?prompt=...`
+- `GET /api/text?prompt=...`
+- `GET /api/audio?text=...`
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
+Steps:
+1) Deploy to Cloudflare Pages (Functions included automatically)
+2) In Cloudflare Pages → Project → Settings → Environment Variables, add:
+   - `POLLINATIONS_API_KEY` (server secret)
+3) In the app UI, enable **Settings → Network → Use server proxy**
 
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
+Dev/testing proxy locally:
+```bash
+npm run build
+npx wrangler pages dev build
+```
 
-## Learn More
+## Seeds (how to get a similar background)
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+To reproduce a similar look, keep these the same:
+- **Seed** (Settings → Generation → Seed → Custom)
+- Prompt + negative prompt
+- Model
+- Output size (images) or aspect ratio + duration (videos)
+- Brand profile + reference mode (if used)
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+You can also click **Lock seed** on a generated result.
 
-### Code Splitting
+## Deployment
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
+### Cloudflare Pages (CLI)
 
-### Analyzing the Bundle Size
+```bash
+npm run build
+npx wrangler pages deploy build --project-name <your-project>
+```
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
+If you want a build-time key in Cloudflare Pages:
+- Add `REACT_APP_POLLINATIONS_API_KEY` to your project’s environment variables (then rebuild/deploy).
 
-### Making a Progressive Web App
+For an open-source public deploy, it’s usually better to **not** bake a key into the build and let each user enter their own key in the UI.
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
+## Security
 
-### Advanced Configuration
+See `docs/SECURITY.md`.
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
+## Troubleshooting
 
-### Deployment
+- **Only some models work**: models can be alpha/slow/limited; try another model or smaller size.
+- **Video feels “stuck”**: video generation can take 1–3 minutes; try `grok-video` first.
+- **CORS / download issues**: use **Open** then save from the new tab if your browser blocks direct download.
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
+## Tech
 
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+- Create React App (`react-scripts`)
+- No backend, no proxy

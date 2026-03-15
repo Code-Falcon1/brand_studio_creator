@@ -7,6 +7,12 @@ body {
   -moz-osx-font-smoothing: grayscale;
 }
 
+html[dir='rtl'] body {
+  font-family: 'IBM Plex Arabic', 'Segoe UI', Tahoma, Arial, 'Noto Naskh Arabic', 'Noto Kufi Arabic', -apple-system,
+    BlinkMacSystemFont, 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+    sans-serif;
+}
+
 code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
